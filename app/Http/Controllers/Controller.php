@@ -6,7 +6,7 @@ use App\Helper\ApiResponse;
 
 abstract class Controller
 {
-    protected function apiResponse(): ApiResponse
+    protected static function apiResponse(): ApiResponse
     {
         return new ApiResponse();
     }

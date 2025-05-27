@@ -26,10 +26,10 @@ class LoginControllerTest extends TestCase
         $request = new LoginRequest($data);
         $action = new LoginAction($request);
         $controller = new LoginController();
-        $response = $controller->login($request, $action);
+        $response = $controller->__invoke($request, $action);
         $data= $response->getData(true);
-        $this->assertArrayHasKey('access_token', $data);
-        $this->assertArrayHasKey('refresh_token', $data);
+        $this->assertArrayHasKey('access_token', $data['data']);
+        $this->assertArrayHasKey('refresh_token', $data['data']);
     }
 
     public function testLoginInValidCredentials(): void
@@ -44,7 +44,7 @@ class LoginControllerTest extends TestCase
         $request = new LoginRequest($data);
         $action = new LoginAction($request);
         $controller = new LoginController();
-        $response = $controller->login($request, $action);
+        $response = $controller->__invoke($request, $action);
         $data= $response->getData(true);
         $this->assertArrayHasKey('message', $data);
     }

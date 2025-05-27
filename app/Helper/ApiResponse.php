@@ -20,6 +20,11 @@ class ApiResponse
         return self::success($data, Response::HTTP_CREATED);
     }
 
+    public static function ok(mixed $data = null): JsonResponse
+    {
+        return self::success($data);
+    }
+
     public static function error(string $message, int $status = Response::HTTP_BAD_REQUEST, mixed $errors = null): JsonResponse
     {
         return response()->json([

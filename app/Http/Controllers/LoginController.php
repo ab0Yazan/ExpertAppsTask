@@ -11,22 +11,18 @@ use Illuminate\Validation\UnauthorizedException;
 
 class LoginController extends Controller
 {
-    public function login(LoginRequest $request, LoginAction $action): JsonResponse
+    public function __invoke(LoginRequest $request, LoginAction $action): JsonResponse
     {
         try {
             /** @array $data */
             $data = $action->execute($request->getLoginDto());
-            return response()->json(LoginResource::make($data), Response::HTTP_OK);
+            return self::apiResponse()->ok(LoginResource::make($data));
         }
         catch (UnauthorizedException $e) {
-            return response()->json([
-                'message' => $e->getMessage(),
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+            return self::apiResponse()->error($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
         }
         catch (\Exception $e) {
-            return response()->json([
-                'message' => 'An unexpected error occurred.',
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return self::apiResponse()->error('An unexpected error occurred.',Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
     }
