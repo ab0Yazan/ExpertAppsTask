@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\TicketStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Ticket extends Model
 {
@@ -15,21 +16,32 @@ class Ticket extends Model
         "user_id",
         "name",
         "status",
-        "description",
-        "category_id"
+        "description"
     ];
+
+    protected $with = ['categories'];
 
     protected $casts = [
         "status" => TicketStatusEnum::class,
     ];
 
-    public function category(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(Category::class);
-    }
-
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function categories(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Category::class);
+    }
+
+    public function persist()
+    {
+        DB::transaction(function ()  {
+            $this->save();
+            $this->categories()->sync($this->categories->pluck("id")->toArray());
+        });
+
+        return $this;
     }
 }

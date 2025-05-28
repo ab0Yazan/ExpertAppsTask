@@ -27,8 +27,12 @@ class FilterTicketFeatureTest extends TestCase
         $category1 = Category::first();
         $category2 = Category::orderBy('id','desc')->first();
 
-        Ticket::factory()->count(5)->create(['category_id' => $category1->id]);
-        Ticket::factory()->count(5)->create(['category_id' => $category2->id]);
+        Ticket::Factory()->count(5)->create()->each(function ($ticket) use ($category1) {
+            $ticket->categories()->attach([$category1->id]);
+        });
+        Ticket::Factory()->count(5)->create()->each(function ($ticket) use ($category2) {
+            $ticket->categories()->attach([$category2->id]);
+        });
 
         $response= $this->get("api/v1/ticket?name={$category1->name}", ['Accept' => 'application/json']);
         $response->assertStatus(Response::HTTP_OK);

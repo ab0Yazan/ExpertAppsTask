@@ -42,10 +42,12 @@ class ListTicketActionTest extends TestCase
         $this->actingAs($user);
 
         $category= Category::inRandomOrder()->first();
-        Ticket::Factory()->count(10)->create(['category_id' => $category->id]);
+        $data=Ticket::Factory()->count(10)->create()->each(function ($ticket) use ($category) {
+            $ticket->categories()->attach([$category->id]);
+        });
 
         $action= resolve(ListTicketAction::class);
-        $dto = new TicketFilterDto(Ticket::inRandomOrder()->first()->category->name);
+        $dto = new TicketFilterDto($category->name);
         $tickets= $action->execute($dto);
         $this->assertInstanceOf(TicketDetailsDto::class, $tickets->first());
         $this->assertCount(10, $tickets);

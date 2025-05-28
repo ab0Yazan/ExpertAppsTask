@@ -30,10 +30,12 @@ class TicketControllerTest extends TestCase
     {
         $user= \App\Models\User::factory()->create();
         $this->actingAs($user);
+
+        $categories = Category::inRandomOrder()->limit(3)->get();
         $data = [
             "name" => fake()->title,
             "description" => fake()->title,
-            "category_id" => Category::inRandomOrder()->first()->id,
+            "category_ids" => $categories->pluck('id')->toArray(),
             "status" => TicketStatusEnum::OPENED->value
         ];
         $request= new UpsertTicketRequest($data);
@@ -49,7 +51,7 @@ class TicketControllerTest extends TestCase
         $data = [
             "name" => fake()->title,
             "description" => fake()->title,
-            "category_id" => Category::inRandomOrder()->first()->id,
+            "category_ids" => [Category::inRandomOrder()->first()->id],
             "status" => TicketStatusEnum::OPENED->value
         ];
 
@@ -65,10 +67,12 @@ class TicketControllerTest extends TestCase
 
         $ticket= Ticket::factory()->create();
 
+        $categories = Category::inRandomOrder()->limit(3)->get();
+
         $data = [
             "name" => fake()->title,
             "description" => fake()->title,
-            "category_id" => Category::inRandomOrder()->first()->id,
+            "category_ids" => $categories->pluck('id')->toArray(),
             "status" => TicketStatusEnum::OPENED->value
         ];
 

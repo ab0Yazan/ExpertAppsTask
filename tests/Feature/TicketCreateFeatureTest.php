@@ -24,10 +24,12 @@ class TicketCreateFeatureTest extends TestCase
         $user= \App\Models\User::factory()->create();
         $this->actingAs($user);
 
+        $categories = Category::inRandomOrder()->limit(3)->get();
+
         $data = [
             "name" => fake()->title,
             "description" => fake()->title,
-            "category_id" => Category::inRandomOrder()->first()->id,
+            "category_ids" => $categories->pluck('id')->toArray(),
             "status" => TicketStatusEnum::OPENED->value,
             "user" => $user,
         ];
@@ -35,6 +37,9 @@ class TicketCreateFeatureTest extends TestCase
         $response= $this->post("api/v1/ticket", $data, ['Accept' => 'application/json']);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('tickets', ["name"=> $data["name"]]);
+        $categories->each(function ($category) {
+            $this->assertDatabaseHas('category_ticket', ['category_id' => $category->id]);
+        });
     }
 
     public function testStoreInValidData(): void
@@ -45,8 +50,8 @@ class TicketCreateFeatureTest extends TestCase
         $data = [
             "name" => fake()->title,
             "description" => fake()->title,
-            "category_id" => 99999,
-            "status" => TicketStatusEnum::OPENED->value
+            "status" => TicketStatusEnum::OPENED->value,
+            "category_ids" => [] //invalid
         ];
 
         $response= $this->post("api/v1/ticket", $data, ['Accept' => 'application/json']);

@@ -3,42 +3,59 @@
 namespace App\Repositories\Eloquent;
 
 use App\DataTransferObjects\UpsertTicketDto;
+use App\Models\Category;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Repositories\Contracts\TicketRepositoryInterface;
 
 class TicketRepository implements TicketRepositoryInterface
 {
-
     public function create(UpsertTicketDto $dto, User $user)
     {
-        return Ticket::create([
+        //create ticket and categories in memory then persist it
+        $ticket = new Ticket([
             'name'=> $dto->name,
             'description'=> $dto->description,
-            'category_id'=> $dto->category->id,
             'status'=> $dto->status->value,
             'user_id'=> $user->id,
         ]);
+        $dto->categories->map(function (Category $category) use ($ticket) {
+            $ticket->categories->push($category);
+        });
+
+        $ticket= $ticket->persist();
+        return $ticket->load('categories');
     }
 
     public function update(Ticket $ticket, UpsertTicketDto $dto)
     {
-        return $ticket->update([
-            'category_id' => $dto->category->id,
-            'name' => $dto->name,
-            'description' => $dto->description,
-            'status' => $dto->status?->value,
+        //create ticket and categories in memory then persist it
+        $ticket->fill([
+            'name'=> $dto->name,
+            'description'=> $dto->description,
+            'status'=> $dto->status->value
         ]);
+        $dto->categories->map(function (Category $category) use ($ticket) {
+            $ticket->categories->push($category);
+        });
+
+        $ticket= $ticket->persist();
+        return $ticket->load('categories');
     }
+
 
     public function filter(array $filters=[])
     {
-        return Ticket::select(['tickets.id', 'tickets.name', 'description', 'user_id', 'category_id', 'status'])->with('user', 'category')
+        return Ticket::select(['tickets.id', 'tickets.name', 'description', 'user_id', 'category_id', 'status'])->with('user', 'categories')
             ->when(isset($filters['name']), function ($q) use ($filters) {
-                $q->join('categories', 'tickets.category_id', '=', 'categories.id')
-                    ->where('tickets.name', 'like', "%{$filters['name']}%")
-                    ->orWhere('categories.name', 'like', "%{$filters['name']}%");
+                $q->where(function ($query) use ($filters) {
+                    $query->where('tickets.name', 'like', "%{$filters['name']}%")
+                        ->orWhereHas('categories', function ($category) use ($filters) {
+                            $category->where('name', 'like', "%{$filters['name']}%");
+                        });
+                });
             })
             ->get();
     }
+
 }

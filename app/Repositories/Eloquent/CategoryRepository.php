@@ -34,4 +34,14 @@ class CategoryRepository implements CategoryRepositoryInterface
             ->when($filters['name'] ?? null, fn ($q, $name) => $q->where('name', 'like', "%$name%"))
             ->when($filters['id'] ?? null, fn ($q, $id) => $q->where('id', $id));
     }
+
+    public function getById(int $id)
+    {
+       return Category::findOrFail($id);
+    }
+
+    public function getByIds(array $ids)
+    {
+        return Category::whereIn('id', $ids)->get();
+    }
 }

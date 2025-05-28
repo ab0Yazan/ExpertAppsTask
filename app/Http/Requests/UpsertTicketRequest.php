@@ -5,6 +5,8 @@ namespace App\Http\Requests;
 use App\DataTransferObjects\UpsertTicketDto;
 use App\Enums\TicketStatusEnum;
 use App\Models\Category;
+use App\Repositories\Contracts\CategoryRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpsertTicketRequest extends FormRequest
@@ -14,27 +16,29 @@ class UpsertTicketRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string', 'max:255'],
-            'category_id' => ['required', 'exists:categories,id'],
             'status' => ['required', 'boolean'],
+            'category_ids' => ['required', 'array'],
+            'category_ids.*' => ['required', 'exists:categories,id'],
         ];
     }
 
     public function getTicketDto(): UpsertTicketDto
     {
         return UpsertTicketDto::fromArray(
-            ['category' => $this->getCategory(),
-                'status' => $this->getStatus(), ] +
+            [
+                'status' => $this->getStatus(),
+                'categories' => $this->getCategories()] +
             $this->all());
     }
 
-    private function getCategory(): Category
-    {
-        #repo
-        return Category::find($this->category_id);
-    }
 
     private function getStatus(): TicketStatusEnum
     {
         return TicketStatusEnum::from($this->status);
+    }
+
+    private function getCategories(): Collection
+    {
+        return resolve(CategoryRepositoryInterface::class)->getByIds($this->input('category_ids'));
     }
 }

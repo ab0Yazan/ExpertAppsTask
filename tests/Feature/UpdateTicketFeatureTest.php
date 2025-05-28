@@ -26,10 +26,12 @@ class UpdateTicketFeatureTest extends TestCase
 
         $ticket= \App\Models\Ticket::factory()->create();
 
+        $categories = Category::inRandomOrder()->limit(3)->get();
+
         $data = [
             "name" => fake()->title,
             "description" => fake()->title,
-            "category_id" => Category::inRandomOrder()->first()->id,
+            "category_ids" => $categories->pluck('id')->toArray(),
             "status" => TicketStatusEnum::OPENED->value,
             "user" => $user,
         ];
@@ -37,6 +39,9 @@ class UpdateTicketFeatureTest extends TestCase
         $response= $this->put("api/v1/ticket/{$ticket->id}", $data, ['Accept' => 'application/json']);
         $response->assertStatus(Response::HTTP_OK);
         $this->assertDatabaseHas('tickets', ["name"=> $data["name"]]);
+        $categories->each(function ($category) use ($ticket){
+            $this->assertDatabaseHas('category_ticket', ['category_id' => $category->id, 'ticket_id' => $ticket->id]);
+        });
     }
 
     public function testUpdateInValidData(): void
@@ -49,7 +54,7 @@ class UpdateTicketFeatureTest extends TestCase
         $data = [
             "name" => fake()->title,
             "description" => fake()->title,
-            "category_id" => 99999,
+            "category_ids" => [], //invalid
             "status" => TicketStatusEnum::OPENED->value
         ];
 

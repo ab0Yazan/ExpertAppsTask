@@ -14,7 +14,7 @@ class TicketResource extends JsonResource
             "name" => $this->name,
             "description" => $this->description,
             "relations" => [
-                "category" => ["id" => $this->category->id, "name" => $this->category->name],
+                "categories" => $this->categories->map->only(['id', 'name']),
                 "user" => ["id" => $this->user->id, "name" => $this->user->name]
             ]
         ];

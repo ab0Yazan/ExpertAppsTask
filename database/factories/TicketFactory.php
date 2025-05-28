@@ -21,7 +21,6 @@ class TicketFactory extends Factory
         return [
             "name"=>$this->faker->name(),
             "description"=>$this->faker->text(),
-            "category_id"=> Category::inRandomOrder()->first(),
             "status" => true,
             "user_id"=> \App\Models\User::inRandomOrder()->first()->id,
         ];

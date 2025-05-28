@@ -27,12 +27,12 @@ class CreateTicketActionTest extends TestCase
         $user= \App\Models\User::factory()->create();
         $this->actingAs($user);
 
-        $category= Category::inRandomOrder()->first();
+        $categories= Category::inRandomOrder()->limit(3)->get();
         $data = [
             "name" => fake()->title,
             "description" => fake()->title,
             "status" => TicketStatusEnum::OPENED,
-            "category" => $category,
+            "categories" => $categories,
             "user" => $user,
         ];
         $action= resolve(CreateTicketAction::class);
@@ -45,6 +45,9 @@ class CreateTicketActionTest extends TestCase
 
         $this->assertInstanceOf(TicketDetailsDto::class, $ticket);
         $this->assertDatabaseHas('tickets', ["name" => $ticket->name]);
+        $categories->each(function ($category) use ($ticket) {
+            $this->assertDatabaseHas('category_ticket', ['category_id' => $category->id, 'ticket_id' => $ticket->id]);
+        });
     }
 
 }

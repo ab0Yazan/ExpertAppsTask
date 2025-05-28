@@ -30,10 +30,10 @@ class UpdateTicketActionTest extends TestCase
 
         $ticket= Ticket::factory()->create();
 
-        $category= Category::inRandomOrder()->first();
+        $categories= Category::limit(3)->get();
 
         $dataToUpdate = [
-            'category' => $category,
+            'categories' => $categories,
             'name' => 'updated version',
             'description' => 'updated version',
             'status' => TicketStatusEnum::CLOSED,
@@ -45,7 +45,10 @@ class UpdateTicketActionTest extends TestCase
         $this->assertInstanceOf(TicketDetailsDto::class, $ticket);
         $this->assertDatabaseHas('tickets', ["name" => $ticket->name,
             "description" => $ticket->description,
-            "category_id"=> $category->id,
             "status" => TicketStatusEnum::CLOSED]);
+        $categories->each(function ($category) use ($ticket) {
+            $this->assertDatabaseHas('category_ticket', ['category_id' => $category->id, 'ticket_id' => $ticket->id]);
+        });
+
     }
 }
