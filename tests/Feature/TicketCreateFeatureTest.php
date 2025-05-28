@@ -32,7 +32,7 @@ class TicketCreateFeatureTest extends TestCase
             "user" => $user,
         ];
 
-        $response= $this->post("api/v1/tickets", $data, ['Accept' => 'application/json']);
+        $response= $this->post("api/v1/ticket", $data, ['Accept' => 'application/json']);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('tickets', ["name"=> $data["name"]]);
     }
@@ -49,7 +49,7 @@ class TicketCreateFeatureTest extends TestCase
             "status" => TicketStatusEnum::OPENED->value
         ];
 
-        $response= $this->post("api/v1/tickets", $data, ['Accept' => 'application/json']);
+        $response= $this->post("api/v1/ticket", $data, ['Accept' => 'application/json']);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertDatabaseMissing('tickets', ["name"=> $data["name"]]);
     }

@@ -30,7 +30,7 @@ class FilterTicketFeatureTest extends TestCase
         Ticket::factory()->count(5)->create(['category_id' => $category1->id]);
         Ticket::factory()->count(5)->create(['category_id' => $category2->id]);
 
-        $response= $this->get("api/v1/tickets?name={$category1->name}", ['Accept' => 'application/json']);
+        $response= $this->get("api/v1/ticket?name={$category1->name}", ['Accept' => 'application/json']);
         $response->assertStatus(Response::HTTP_OK);
         $this->assertCount(5, $response->json('data'));
     }

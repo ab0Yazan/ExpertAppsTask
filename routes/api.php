@@ -17,7 +17,7 @@ Route::prefix('lookups')->group(function () {
     Route::get('categories', CategoryListController::class);
 });
 
-Route::prefix('tickets')->middleware('auth:sanctum')->group(function () {
+Route::prefix('ticket')->middleware('auth:sanctum')->group(function () {
     Route::get('', [\App\Http\Controllers\TicketController::class, 'filter']);
     Route::post('', [\App\Http\Controllers\TicketController::class, 'store']);
     Route::put('{ticket}', [\App\Http\Controllers\TicketController::class, 'update']);

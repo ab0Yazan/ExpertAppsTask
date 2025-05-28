@@ -13,6 +13,7 @@ use App\Models\Category;
 use App\Models\Ticket;
 use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Validation\UnauthorizedException;
 use Tests\TestCase;
 
 class TicketControllerTest extends TestCase
@@ -52,10 +53,9 @@ class TicketControllerTest extends TestCase
             "status" => TicketStatusEnum::OPENED->value
         ];
 
+        $this->expectException(UnauthorizedException::class);
         $request = new UpsertTicketRequest($data);
         $response= (new TicketController())->store($request, resolve(CreateTicketAction::class));
-
-        $this->assertEquals("error", $response->getData(true)["status"]);
     }
 
     public function testItUpdatesTicketValidData(): void
