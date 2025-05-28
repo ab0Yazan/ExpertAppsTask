@@ -4,10 +4,10 @@ namespace Tests\Unit;
 
 
 use App\Actions\CreateTicketAction;
-use App\DataTransferObjects\UpsertTicketDto;
 use App\DataTransferObjects\TicketDetailsDto;
+use App\DataTransferObjects\UpsertTicketDto;
+use App\Enums\TicketStatusEnum;
 use App\Models\Category;
-use App\TicketStatusEnum;
 use Database\Seeders\CategorySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

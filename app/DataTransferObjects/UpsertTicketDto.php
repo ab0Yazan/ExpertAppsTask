@@ -2,8 +2,8 @@
 
 namespace App\DataTransferObjects;
 
+use App\Enums\TicketStatusEnum;
 use App\Models\Category;
-use App\TicketStatusEnum;
 
 final readonly class UpsertTicketDto
 {

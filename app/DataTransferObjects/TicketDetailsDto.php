@@ -2,10 +2,10 @@
 
 namespace App\DataTransferObjects;
 
+use App\Enums\TicketStatusEnum;
 use App\Models\Category;
 use App\Models\Ticket;
 use App\Models\User;
-use App\TicketStatusEnum;
 
 class TicketDetailsDto
 {

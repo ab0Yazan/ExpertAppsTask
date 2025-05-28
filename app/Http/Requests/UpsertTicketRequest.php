@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use App\DataTransferObjects\UpsertTicketDto;
+use App\Enums\TicketStatusEnum;
 use App\Models\Category;
-use App\TicketStatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpsertTicketRequest extends FormRequest
