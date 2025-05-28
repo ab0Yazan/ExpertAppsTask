@@ -19,7 +19,7 @@ class CategoryListFeatureTest extends TestCase
 
     public function testListCategories(): void
     {
-        $response= $this->get("api/lookups/categories",  ['Accept' => 'application/json']);
+        $response= $this->get("api/v1/lookups/categories",  ['Accept' => 'application/json']);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonStructure([
             "status",

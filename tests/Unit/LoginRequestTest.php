@@ -21,7 +21,7 @@ class LoginRequestTest extends TestCase
     public function testLoginRequestValidation()
     {
         $request = new LoginRequest();
-        $request->merge(['email' => fake()->email, "password" => fake()->password, "name" => fake()->name]);
+        $request->merge(['email' => fake()->email, "password" => fake()->password(8), "name" => fake()->name]);
         $validator = Validator::make($request->all(), $request->rules());
         $this->assertTrue($validator->passes());
     }
@@ -29,7 +29,7 @@ class LoginRequestTest extends TestCase
     public function testLoginRequestValidationForInvalidEmail()
     {
         $request = new LoginRequest();
-        $request->merge(['email' => "invalid email", "password" => fake()->password, "name" => fake()->name]);
+        $request->merge(['email' => "invalid email", "password" => fake()->password(8), "name" => fake()->name]);
         $validator = Validator::make($request->all(), $request->rules());
         $this->assertTrue($validator->fails());
         $this->assertEquals("The email field must be a valid email address.",$validator->errors()->first('email'));
