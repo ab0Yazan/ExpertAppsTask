@@ -18,6 +18,7 @@ return new class extends Migration
             $table->boolean('status')->default(true)->index();
 
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
     }

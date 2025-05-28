@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Category;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,13 @@ class TicketFactory extends Factory
      */
     public function definition(): array
     {
+
         return [
-            //
+            "name"=>$this->faker->name(),
+            "description"=>$this->faker->text(),
+            "category_id"=> Category::inRandomOrder()->first(),
+            "status" => true,
+            "user_id"=> \App\Models\User::inRandomOrder()->first()->id,
         ];
     }
 }

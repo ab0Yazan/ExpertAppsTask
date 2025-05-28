@@ -16,3 +16,9 @@ Route::prefix('auth')->group(function () {
 Route::prefix('lookups')->group(function () {
     Route::get('categories', CategoryListController::class);
 });
+
+Route::prefix('tickets')->group(function () {
+    Route::post('', [\App\Http\Controllers\TicketController::class, 'store']);
+    Route::put('{ticket}', [\App\Http\Controllers\TicketController::class, 'update']);
+
+});
