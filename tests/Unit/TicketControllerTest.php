@@ -35,7 +35,7 @@ class TicketControllerTest extends TestCase
         ];
         $request= new UpsertTicketRequest($data);
         $controller = new TicketController();
-        $action= new CreateTicketAction();
+        $action= resolve(CreateTicketAction::class);
         $response= $controller->store($request, $action);
         $arr= $response->getData(true);
         $this->assertEquals($data["name"], $arr["data"]["name"]);
@@ -51,7 +51,7 @@ class TicketControllerTest extends TestCase
         ];
 
         $request = new UpsertTicketRequest($data);
-        $response= (new TicketController())->store($request, new CreateTicketAction());
+        $response= (new TicketController())->store($request, resolve(CreateTicketAction::class));
 
         $this->assertEquals("error", $response->getData(true)["status"]);
     }
@@ -72,7 +72,7 @@ class TicketControllerTest extends TestCase
 
         $request= new UpsertTicketRequest($data);
         $controller = new TicketController();
-        $action= new UpdateTicketAction();
+        $action= resolve(UpdateTicketAction::class);
         $response= $controller->update($request, $action, $ticket);
         $arr= $response->getData(true);
         $this->assertEquals($data["name"], $arr["data"]["name"]);

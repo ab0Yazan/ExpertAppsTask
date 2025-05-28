@@ -20,7 +20,7 @@ class CategoryListActionTest extends TestCase
 
     public function testCanListCategoriesAndChilderns(): void
     {
-        $action = new CategoryListAction();
+        $action = resolve(CategoryListAction::class);
         $categories= $action->execute();
         $tree= $categories->toArray();
         $this->assertCount(2, $tree[0]['children']);
@@ -34,7 +34,7 @@ class CategoryListActionTest extends TestCase
             ->with('category_tree', \Mockery::type(\DateTimeInterface::class), \Closure::class)
             ->andReturn(collect([]));
 
-        $action = new CategoryListAction();
+        $action = resolve(CategoryListAction::class);
 
         $dto = $action->execute();
 

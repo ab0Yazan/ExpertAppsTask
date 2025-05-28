@@ -5,18 +5,15 @@ namespace App\Actions;
 use App\DataTransferObjects\TicketDetailsDto;
 use App\DataTransferObjects\UpsertTicketDto;
 use App\Models\Ticket;
+use App\Repositories\Contracts\TicketRepositoryInterface;
 
 class UpdateTicketAction
 {
+    public function __construct(private TicketRepositoryInterface $repo){}
+
     public function execute(UpsertTicketDto $dto,Ticket $ticket)
     {
-        #repo
-        $ticket->update([
-            'category_id' => $dto->category?->id,
-            'name' => $dto->name,
-            'description' => $dto->description,
-            'status' => $dto->status?->value,
-        ]);
+        $this->repo->update($ticket, $dto);
 
         return TicketDetailsDto::fromModel($ticket->fresh());
     }
