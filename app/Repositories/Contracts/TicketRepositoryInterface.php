@@ -10,4 +10,5 @@ interface TicketRepositoryInterface
 {
     public function create(UpsertTicketDto $dto, User $user);
     public function update(Ticket $ticket, UpsertTicketDto $dto);
+    public function filter(array $filters=[]);
 }

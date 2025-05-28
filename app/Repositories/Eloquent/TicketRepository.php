@@ -30,4 +30,15 @@ class TicketRepository implements TicketRepositoryInterface
             'status' => $dto->status?->value,
         ]);
     }
+
+    public function filter(array $filters=[])
+    {
+        return Ticket::select(['tickets.id', 'tickets.name', 'description', 'user_id', 'category_id', 'status'])->with('user', 'category')
+            ->when(isset($filters['name']), function ($q) use ($filters) {
+                $q->join('categories', 'tickets.category_id', '=', 'categories.id')
+                    ->where('tickets.name', 'like', "%{$filters['name']}%")
+                    ->orWhere('categories.name', 'like', "%{$filters['name']}%");
+            })
+            ->get();
+    }
 }

@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             "password" => Hash::make('12345678'),
         ]);
 
+        User::factory()->count(5)->create();
         $this->call(CategorySeeder::class);
+        $this->call(TicketSeeder::class);
     }
 }

@@ -3,8 +3,10 @@
 namespace Tests\Unit;
 
 use App\Actions\CreateTicketAction;
+use App\Actions\ListTicketAction;
 use App\Actions\UpdateTicketAction;
 use App\Http\Controllers\TicketController;
+use App\Http\Requests\ListTicketRequest;
 use App\Http\Requests\UpsertTicketRequest;
 use App\Models\Category;
 use App\Models\Ticket;
@@ -76,5 +78,22 @@ class TicketControllerTest extends TestCase
         $response= $controller->update($request, $action, $ticket);
         $arr= $response->getData(true);
         $this->assertEquals($data["name"], $arr["data"]["name"]);
+    }
+
+    public function testListTicketsByFilter(): void
+    {
+        $user= \App\Models\User::factory()->create();
+        $this->actingAs($user);
+
+        Ticket::factory()->count(10)->create();
+
+        $request= new ListTicketRequest();
+        $action= resolve(ListTicketAction::class);
+        $controller = new TicketController();
+        $response= $controller->filter($request, $action);
+        $arr= $response->getData(true);
+        $this->assertCount(10, $arr["data"]);
+        $this->assertEquals("success", $arr["status"]);
+
     }
 }
