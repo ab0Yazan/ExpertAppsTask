@@ -22,7 +22,7 @@ class RegisterActionTest extends TestCase
         ];
 
         $dto=  UserRegisterationDto::fromArray($data);
-        $action = new UserRegisterAction();
+        $action = resolve(UserRegisterAction::class);
         $user = $action->execute($dto, $data['password']);
         $this->assertInstanceOf(User::class, $user);
         $this->assertDatabaseHas('users', $user->getAttributes());
@@ -40,8 +40,7 @@ class RegisterActionTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $dto=  UserRegisterationDto::fromArray($data);
-        $action = new UserRegisterAction();
-        $user = $action->execute($dto, $data['password']);
-
+        $action = resolve(UserRegisterAction::class);
+        $action->execute($dto, $data['password']);
     }
 }

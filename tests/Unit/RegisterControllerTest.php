@@ -21,7 +21,7 @@ class RegisterControllerTest extends TestCase
         ];
         $request= new StoreRegisterRequest($data);
         $controller = new RegisterController();
-        $action= new UserRegisterAction();
+        $action= resolve(UserRegisterAction::class);
         $response= $controller->__invoke($request, $action);
         $json= $response->getData(true);
         $this->assertArrayHasKey("email", $json["data"]);
@@ -39,7 +39,7 @@ class RegisterControllerTest extends TestCase
 
         $request= new StoreRegisterRequest($data);
         $controller = new RegisterController();
-        $action= new UserRegisterAction();
+        $action= resolve(UserRegisterAction::class);
         $response = $controller->__invoke($request, $action);
         $json= $response->getData(true);
         $this->assertEquals("error", $json["status"]);

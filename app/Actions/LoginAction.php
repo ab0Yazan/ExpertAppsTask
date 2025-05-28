@@ -4,13 +4,14 @@ namespace App\Actions;
 
 use App\DataTransferObjects\LoginDto;
 use App\DataTransferObjects\LoginResponseDto;
-use App\Models\User;
+use App\Repositories\Contracts\UserRepositoryInterface;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\UnauthorizedException;
 
 class LoginAction
 {
+    public function __construct(private UserRepositoryInterface $repo){}
     public function execute(LoginDto $dto) : LoginResponseDto
     {
         $user= $this->validateCredentials($dto->getEmail(), $dto->getPassword());
@@ -29,7 +30,7 @@ class LoginAction
 
     private function validateCredentials(string $email, string $password)
     {
-        $user = User::where('email','=', $email)->first();
+        $user = $this->repo->findBy(['email' => $email])->first();
         if (! $user || ! Hash::check($password, $user->password)) {
             throw new UnauthorizedException('Invalid email or password.', Response::HTTP_UNAUTHORIZED);
         }

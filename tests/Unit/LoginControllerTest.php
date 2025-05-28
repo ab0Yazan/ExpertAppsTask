@@ -24,7 +24,7 @@ class LoginControllerTest extends TestCase
         $user = User::factory()->create($data);
 
         $request = new LoginRequest($data);
-        $action = new LoginAction($request);
+        $action = resolve(LoginAction::class);
         $controller = new LoginController();
         $response = $controller->__invoke($request, $action);
         $data= $response->getData(true);
@@ -42,7 +42,7 @@ class LoginControllerTest extends TestCase
         $user = User::factory()->create(["password" => Hash::make("invalid")]);
 
         $request = new LoginRequest($data);
-        $action = new LoginAction($request);
+        $action = resolve(LoginAction::class);
         $controller = new LoginController();
         $response = $controller->__invoke($request, $action);
         $data= $response->getData(true);
