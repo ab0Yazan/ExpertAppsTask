@@ -34,7 +34,7 @@ class TicketCreateFeatureTest extends TestCase
             "user" => $user,
         ];
 
-        $response= $this->post("api/v1/ticket", $data, ['Accept' => 'application/json']);
+        $response= $this->post("api/v1/ticket/add", $data, ['Accept' => 'application/json']);
         $response->assertStatus(Response::HTTP_CREATED);
         $this->assertDatabaseHas('tickets', ["name"=> $data["name"]]);
         $categories->each(function ($category) {
@@ -54,7 +54,7 @@ class TicketCreateFeatureTest extends TestCase
             "category_ids" => [] //invalid
         ];
 
-        $response= $this->post("api/v1/ticket", $data, ['Accept' => 'application/json']);
+        $response= $this->post("api/v1/ticket/add", $data, ['Accept' => 'application/json']);
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $this->assertDatabaseMissing('tickets', ["name"=> $data["name"]]);
     }

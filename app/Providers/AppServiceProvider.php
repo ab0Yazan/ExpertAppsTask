@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(TelescopeServiceProvider::class);
         }
 
-        
+
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
         $this->app->bind(TicketRepositoryInterface::class, TicketRepository::class);
         $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
